@@ -1,14 +1,16 @@
 package com.cemihsankurt.foodAppProject.controller;
 
+import com.cemihsankurt.foodAppProject.dto.AddressDto;
 import com.cemihsankurt.foodAppProject.service.ICustomerService;
+import jakarta.validation.Valid;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Data
 class FcmTokenRequest{
@@ -28,5 +30,25 @@ public class CustomerController implements ICustomerController{
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/addresses")
+    @Override
+    public ResponseEntity<AddressDto> addAddress(@Valid @RequestBody AddressDto addressDto, Authentication authentication) {
+        AddressDto newAddress = customerService.addAddress(addressDto, authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAddress);
+    }
 
+    @DeleteMapping("/addresses/{addressId}")
+    @Override
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long addressId, Authentication authentication) {
+        customerService.deleteAddress(addressId, authentication);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/addresses")
+    @Override
+    public ResponseEntity<List<AddressDto>> getAllAddresses(Authentication authentication) {
+
+        List<AddressDto> addresses = customerService.getMyAddresses(authentication);
+        return ResponseEntity.ok().body(addresses);
+    }
 }

@@ -20,6 +20,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     List<Restaurant> findByApprovalStatus(ApprovalStatus approvalStatus);
 
+    List<Restaurant> findByApprovalStatusAndIsAvailable(ApprovalStatus status, boolean isAvailable);
+
 
 
 

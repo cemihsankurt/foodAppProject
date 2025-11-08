@@ -39,6 +39,8 @@ public class Order {
 
     private BigDecimal totalPrice;
 
+    @Column(name = "delivery_address", nullable = false)
+    private String deliveryAddress;
 
 
 

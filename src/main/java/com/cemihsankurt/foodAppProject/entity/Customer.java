@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "Customers")
@@ -33,6 +36,13 @@ public class Customer {
 
     @Column(name = "fcm_token")
     private String fcmToken;
+
+    @OneToMany(
+            mappedBy = "customer", // Address sınıfındaki 'customer' alanıyla bağlı
+            cascade = CascadeType.ALL, // Müşteri silinirse adresleri de sil
+            orphanRemoval = true // Listeden adres silinirse DB'den de sil
+    )
+    private List<Address> addresses = new ArrayList<>();
 
 
 }

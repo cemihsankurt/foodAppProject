@@ -1,6 +1,7 @@
 package com.cemihsankurt.foodAppProject.service;
 
 import com.cemihsankurt.foodAppProject.dto.ProductDto;
+import com.cemihsankurt.foodAppProject.dto.RestaurantDto;
 import com.cemihsankurt.foodAppProject.entity.ApprovalStatus;
 import com.cemihsankurt.foodAppProject.entity.Product;
 import com.cemihsankurt.foodAppProject.entity.Restaurant;
@@ -113,6 +114,14 @@ public class RestaurantService implements IRestaurantService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<RestaurantDto> getAvailableRestaurants() {
+        List<Restaurant> restaurants = restaurantRepository.findByApprovalStatusAndIsAvailable(ApprovalStatus.APPROVED,true);
+        return restaurants.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     private Restaurant getCurrentRestaurant(Authentication authentication) {
 
         String userEmail = authentication.getName();
@@ -122,10 +131,18 @@ public class RestaurantService implements IRestaurantService{
 
     private ProductDto convertToDto(Product product) {
 
-        return ProductDto.builder().
-                name(product.getName())
+        return ProductDto.builder()
+                .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
+                .build();
+    }
+
+    private RestaurantDto convertToDto(Restaurant restaurant) {
+
+        return RestaurantDto.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
                 .build();
     }
 }

@@ -48,10 +48,13 @@ public class OrderService implements IOrderService{
     @Autowired
     private FCMService fcmService;
 
+    @Autowired
+    private AddressRepository addressRepository;
+
 
     @Override
     @Transactional
-    public OrderDetailsResponseDto createOrderFromCart(Authentication authentication) {
+    public OrderDetailsResponseDto createOrderFromCart(Authentication authentication, Long addressId) {
 
         String userEmail = authentication.getName();
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -64,10 +67,19 @@ public class OrderService implements IOrderService{
             throw new IllegalStateException("Cart is empty");
         }
 
+        Address deliveryAddress = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+
+        if (!deliveryAddress.getCustomer().getId().equals(customer.getId())) {
+            throw new AccessDeniedException("Bu adresi sipariş için kullanma yetkiniz yok.");
+        }
+
         Order order = new Order();
         order.setCustomer(customer);
         order.setOrderTime(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.PENDING);
+
+        String addressSnapshot = deliveryAddress.getAddressTitle() + "\n " + deliveryAddress.getFullAddress();
+        order.setDeliveryAddress(addressSnapshot);
 
         BigDecimal cartTotal = BigDecimal.ZERO;
         Restaurant restaurant = null;

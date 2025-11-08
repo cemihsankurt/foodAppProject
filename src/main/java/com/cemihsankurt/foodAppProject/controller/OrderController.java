@@ -1,5 +1,6 @@
 package com.cemihsankurt.foodAppProject.controller;
 
+import com.cemihsankurt.foodAppProject.dto.CreateOrderRequestDto;
 import com.cemihsankurt.foodAppProject.dto.OrderDetailsResponseDto;
 import com.cemihsankurt.foodAppProject.service.CustomerService;
 import com.cemihsankurt.foodAppProject.service.IOrderService;
@@ -24,9 +25,11 @@ public class OrderController implements IOrderController{
 
     @PostMapping("/create-from-cart")
     @Override
-    public ResponseEntity<OrderDetailsResponseDto> createOrder(Authentication authentication) {
+    public ResponseEntity<OrderDetailsResponseDto> createOrder(
+            @Valid @RequestBody CreateOrderRequestDto createOrderRequestDto,
+            Authentication authentication) {
 
-        OrderDetailsResponseDto response = orderService.createOrderFromCart(authentication);
+        OrderDetailsResponseDto response = orderService.createOrderFromCart(authentication,createOrderRequestDto.getAddressId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
