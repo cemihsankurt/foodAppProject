@@ -51,6 +51,9 @@ public class OrderService implements IOrderService{
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private ICustomerService customerService;
+
 
     @Override
     @Transactional
@@ -64,7 +67,7 @@ public class OrderService implements IOrderService{
 
         if(cart.getCartItems().isEmpty()){
 
-            throw new IllegalStateException("Cart is empty");
+            throw new IllegalStateException("Cart is empty. Cannot create order.");
         }
 
         Address deliveryAddress = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
@@ -127,7 +130,10 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public List<OrderDetailsResponseDto> getOrdersByCustomerId(Long customerId) {
+    public List<OrderDetailsResponseDto> getOrdersByCustomerId(Authentication authentication) {
+
+        String userEmail = authentication.getName();
+        Long customerId = customerRepository.findCustomerIdByUserEmail(userEmail);
 
         List<Order> orders = orderRepository.findByCustomerId(customerId);
             return orders.stream()
@@ -176,23 +182,22 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public OrderDetailsResponseDto deleteOrderById(Long orderId) {
+    public OrderDetailsResponseDto cancelOrder(Long orderId,Authentication authentication) {
+
+        String userEmail = authentication.getName();
+        Long customerId = customerService.findCustomerIdByUserEmail(userEmail);
+
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Customer authCustomer = customerRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
-        if(!order.getCustomer().getId().equals(authCustomer.getId())){
-            throw new RuntimeException("Unauthorized access to order");
+        if(!order.getCustomer().getId().equals(customerId)){
+            throw new AccessDeniedException("Unauthorized access to order");
         }
 
         if(order.getOrderStatus() != OrderStatus.PENDING){
-            throw new AccessDeniedException("Only pending orders can be deleted");
+            throw new IllegalStateException("Only pending orders can be cancelled");
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
@@ -262,7 +267,7 @@ public class OrderService implements IOrderService{
                 .customerName(order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName())
                 .orderItemDtos(convertOrderItemsToDto(order.getOrderItems()))
                 .totalPrice(order.getTotalPrice())
-                .orderStatus(order.getOrderStatus().toString())
+                .orderStatus(order.getOrderStatus())
                 .orderTime(order.getOrderTime())
                 .build();
     }

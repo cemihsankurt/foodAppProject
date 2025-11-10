@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,9 +31,10 @@ public class CustomerService implements ICustomerService{
     @Override
     public Long findCustomerIdByUserEmail(String email) {
 
-        return customerRepository.findByUserEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"))
-                .getId();
+        Customer customer  = customerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        return customer.getId();
     }
 
     @Override

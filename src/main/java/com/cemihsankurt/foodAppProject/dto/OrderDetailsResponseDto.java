@@ -1,5 +1,6 @@
 package com.cemihsankurt.foodAppProject.dto;
 
+import com.cemihsankurt.foodAppProject.entity.OrderStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,7 +16,7 @@ public class OrderDetailsResponseDto {
     private String restaurantName;
     private String customerName;
     private BigDecimal totalPrice;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private List<OrderItemDto> orderItemDtos;
     private LocalDateTime orderTime;
 

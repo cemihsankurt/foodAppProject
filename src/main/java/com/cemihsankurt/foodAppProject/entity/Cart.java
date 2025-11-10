@@ -1,14 +1,17 @@
 package com.cemihsankurt.foodAppProject.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "carts")
+@Getter
+@Setter
+@ToString(exclude = "customer") // ToString'de sonsuz döngü yapma
+@EqualsAndHashCode(exclude = "customer") // Equals/HashCode'da sonsuz döngü yapma
 public class Cart {
 
     @Id

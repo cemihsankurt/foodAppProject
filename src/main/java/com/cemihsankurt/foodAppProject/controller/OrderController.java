@@ -2,6 +2,7 @@ package com.cemihsankurt.foodAppProject.controller;
 
 import com.cemihsankurt.foodAppProject.dto.CreateOrderRequestDto;
 import com.cemihsankurt.foodAppProject.dto.OrderDetailsResponseDto;
+import com.cemihsankurt.foodAppProject.entity.Order;
 import com.cemihsankurt.foodAppProject.service.CustomerService;
 import com.cemihsankurt.foodAppProject.service.IOrderService;
 import jakarta.validation.Valid;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-public class OrderController implements IOrderController{
+public class OrderController implements IOrderController {
 
     @Autowired
     private IOrderService orderService;
@@ -24,38 +25,37 @@ public class OrderController implements IOrderController{
 
 
     @PostMapping("/create-from-cart")
-    @Override
     public ResponseEntity<OrderDetailsResponseDto> createOrder(
             @Valid @RequestBody CreateOrderRequestDto createOrderRequestDto,
             Authentication authentication) {
 
-        OrderDetailsResponseDto response = orderService.createOrderFromCart(authentication,createOrderRequestDto.getAddressId());
+        OrderDetailsResponseDto response = orderService.createOrderFromCart(authentication, createOrderRequestDto.getAddressId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
 
     @GetMapping("/my-orders")
-    @Override
-    public List<OrderDetailsResponseDto> getAllOrders(Authentication authentication) {
+    public ResponseEntity<List<OrderDetailsResponseDto>> getAllOrders(Authentication authentication) {
 
-        String userEmail = authentication.getName();
-        Long customerId = customerService.findCustomerIdByUserEmail(userEmail);
-        return orderService.getOrdersByCustomerId(customerId);
+        List<OrderDetailsResponseDto> response = orderService.getOrdersByCustomerId(authentication);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
     @GetMapping("/{orderId}")
-    @Override
-    public OrderDetailsResponseDto getOrderById(@PathVariable Long orderId, Authentication authentication) {
+    public ResponseEntity<OrderDetailsResponseDto> getOrderById(@PathVariable Long orderId, Authentication authentication) {
 
-        return orderService.getOrderById(orderId,authentication);
+        OrderDetailsResponseDto response = orderService.getOrderById(orderId, authentication);
+        return ResponseEntity.ok(response);
+
+
     }
 
     @PutMapping("/{orderId}/cancel")
-    @Override
-    public OrderDetailsResponseDto deleteOrderById(@PathVariable Long orderId) {
+    public ResponseEntity<OrderDetailsResponseDto> cancelOrder(@PathVariable Long orderId, Authentication authentication) {
 
-        return orderService.deleteOrderById(orderId);
 
+        OrderDetailsResponseDto response = orderService.cancelOrder(orderId, authentication);
+        return ResponseEntity.ok(response);
     }
 }

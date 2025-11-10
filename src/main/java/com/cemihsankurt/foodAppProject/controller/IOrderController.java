@@ -10,11 +10,11 @@ public interface IOrderController {
 
     ResponseEntity<OrderDetailsResponseDto> createOrder(CreateOrderRequestDto createOrderRequestDto,Authentication authentication);
 
-    List<OrderDetailsResponseDto> getAllOrders(Authentication authentication);
+    ResponseEntity<List<OrderDetailsResponseDto>> getAllOrders(Authentication authentication);
 
-    OrderDetailsResponseDto getOrderById(Long orderId, Authentication authentication);
+    ResponseEntity<OrderDetailsResponseDto> getOrderById(Long orderId, Authentication authentication);
 
-    OrderDetailsResponseDto deleteOrderById(Long orderId);
+    ResponseEntity<OrderDetailsResponseDto> cancelOrder(Long orderId,Authentication authentication);
 
 
 }
