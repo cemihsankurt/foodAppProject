@@ -300,7 +300,7 @@ class OrderControllerTest {
 
         Long orderId = testOrder.getId();
 
-        mockMvc.perform(put("/api/orders/{orderId}/cancel", orderId)
+        mockMvc.perform(post("/api/orders/{orderId}/cancel", orderId)
                 .header("Authorization", "Bearer " + customerToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(orderId))
@@ -314,7 +314,7 @@ class OrderControllerTest {
         testOrder = orderRepository.save(testOrder);
         Long orderId = testOrder.getId();
 
-        mockMvc.perform(put("/api/orders/{orderId}/cancel", orderId)
+        mockMvc.perform(post("/api/orders/{orderId}/cancel", orderId)
                 .header("Authorization", "Bearer " + customerToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Only pending orders can be cancelled."));
@@ -336,7 +336,7 @@ class OrderControllerTest {
 
         String hackerToken = jwtTokenProvider.generateToken(anotherUser);
 
-        mockMvc.perform(put("/api/orders/{orderId}/cancel", testOrder.getId())
+        mockMvc.perform(post("/api/orders/{orderId}/cancel", testOrder.getId())
                         .header("Authorization", "Bearer " + hackerToken))
                 .andExpect(status().isForbidden());
     }

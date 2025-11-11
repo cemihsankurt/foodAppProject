@@ -6,6 +6,7 @@ import com.cemihsankurt.foodAppProject.service.IEmailService;
 import com.cemihsankurt.foodAppProject.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +23,10 @@ public class AuthController implements IAuthController{
 
     @PostMapping("/register-restaurant")
     @Override
-    public UserResponseDto registerRestaurant(@Valid  @RequestBody RegisterRestaurantRequestDto registerRestaurantRequestDto) {
+    public ResponseEntity<UserResponseDto> registerRestaurant(@Valid  @RequestBody RegisterRestaurantRequestDto registerRestaurantRequestDto) {
 
-        return authService.registerRestaurant(registerRestaurantRequestDto);
+        UserResponseDto response = authService.registerRestaurant(registerRestaurantRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
 
@@ -32,9 +34,10 @@ public class AuthController implements IAuthController{
 
     @PostMapping("/register-customer")
     @Override
-    public UserResponseDto registerCustomer(@Valid @RequestBody RegisterCustomerRequestDto registerCustomerRequestDto) {
+    public ResponseEntity<UserResponseDto> registerCustomer(@Valid @RequestBody RegisterCustomerRequestDto registerCustomerRequestDto) {
 
-        return authService.registerCustomer(registerCustomerRequestDto);
+        UserResponseDto response = authService.registerCustomer(registerCustomerRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
@@ -47,9 +50,10 @@ public class AuthController implements IAuthController{
 
     @GetMapping("/verify")
     @Override
-    public String verifyEmail(@RequestParam("token") String token) {
+    public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
 
-        return  authService.verifyToken(token);
+        String response = authService.verifyToken(token);
+        return ResponseEntity.ok(response);
 
     }
 

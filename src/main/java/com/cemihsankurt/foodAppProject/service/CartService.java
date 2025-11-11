@@ -42,6 +42,7 @@ public class CartService implements ICartService {
             newItem.setProduct(product);
             newItem.setQuantity(quantity);
             cartItemRepository.save(newItem);
+            myCart.getCartItems().add(newItem);
 
         }
 
@@ -54,6 +55,7 @@ public class CartService implements ICartService {
         Cart myCart = findMyCart(authentication);
         CartItem itemToRemove = cartItemRepository.findByCartIdAndProductId(myCart.getId(), productId).orElseThrow(() -> new ResourceNotFoundException("Item not found in the cart"));
         cartItemRepository.delete(itemToRemove);
+        myCart.getCartItems().remove(itemToRemove);
 
         return getCartContents(authentication);
     }

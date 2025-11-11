@@ -37,7 +37,7 @@ public class RestaurantService implements IRestaurantService{
        Restaurant restaurant = getCurrentRestaurant(authentication);
 
         if(restaurant.getApprovalStatus() != ApprovalStatus.APPROVED ){
-            throw new AccessDeniedException("User is not approved yet");
+            throw new IllegalStateException("Only approved restaurants can update availability status.");
         }
 
         restaurant.setAvailable(isAvailable);

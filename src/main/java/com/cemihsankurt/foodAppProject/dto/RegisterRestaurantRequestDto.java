@@ -3,6 +3,7 @@ package com.cemihsankurt.foodAppProject.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -22,6 +23,7 @@ public class RegisterRestaurantRequestDto {
     private String restaurantName;
 
     @NotEmpty
+    @Pattern(regexp = "\\d{11}", message = "Phone number must be 11 digits")
     private String phoneNumber;
 
 }

@@ -37,9 +37,10 @@ public class RestaurantPanelController implements IRestaurantPanelController {
 
     @Override
     @PostMapping("/status")
-    public void updateAvailability(@RequestBody StatusUpdateRequest request, Authentication authentication) {
+    public ResponseEntity<Void> updateAvailability(@RequestBody StatusUpdateRequest request, Authentication authentication) {
 
         restaurantService.updateAvailability(request.isAvailable(),authentication);
+        return ResponseEntity.ok().build();
     }
 
     @Override
@@ -52,9 +53,10 @@ public class RestaurantPanelController implements IRestaurantPanelController {
 
     @Override
     @DeleteMapping("/menu/products/{productId}")
-    public void deleteProductFromMenu(@PathVariable Long productId, Authentication authentication) {
+    public ResponseEntity<Void> deleteProductFromMenu(@PathVariable Long productId, Authentication authentication) {
 
         restaurantService.deleteProductFromMenu(productId,authentication);
+        return ResponseEntity.ok().build();
     }
 
     @Override
@@ -73,4 +75,5 @@ public class RestaurantPanelController implements IRestaurantPanelController {
         OrderDetailsResponseDto response = orderService.updateOrderStatus(orderId,orderStatusRequest.getNewStatus(),authentication);
         return ResponseEntity.ok(response);
     }
+
 }
