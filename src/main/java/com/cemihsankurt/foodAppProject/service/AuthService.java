@@ -151,14 +151,8 @@ public class AuthService implements IAuthService{
             throw new AccessDeniedException("User not verified, please verify it first to login");
         }
 
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority(user.getRole().name()))
-        );
 
-
-        String generatedToken = jwtTokenProvider.generateToken(userDetails);
+        String generatedToken = jwtTokenProvider.generateToken(user);
         return new AuthResponseDto(generatedToken);
 
 

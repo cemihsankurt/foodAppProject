@@ -17,17 +17,18 @@ public class AdminController implements IAdminController {
 
     @Override
     @GetMapping("/restaurants/pending")
-    public List<RestaurantPendingDto> getRestaurants() {
+    public ResponseEntity<List<RestaurantPendingDto>> getPendingRestaurants() {
 
-        return adminService.getPendingRestaurants();
+        List<RestaurantPendingDto> response = adminService.getPendingRestaurants();
+        return ResponseEntity.ok(response);
     }
 
     @Override
     @PostMapping("/restaurants/{restaurantId}/approve")
     public ResponseEntity<String> approveRestaurant(@PathVariable  Long restaurantId) {
 
-        adminService.approveRestaurant(restaurantId);
-        return ResponseEntity.ok("Restaurant (ID : " + restaurantId + ") has been approved");
+        String response = adminService.approveRestaurant(restaurantId);
+        return ResponseEntity.ok(response);
 
     }
 
@@ -35,8 +36,8 @@ public class AdminController implements IAdminController {
     @PostMapping("/restaurants/{restaurantId}/reject")
     public ResponseEntity<String> rejectRestaurant(@PathVariable Long restaurantId) {
 
-        adminService.rejectRestaurant(restaurantId);
-        return ResponseEntity.ok("Restaurant (ID : " + restaurantId + ") has been rejected");
+        String response = adminService.rejectRestaurant(restaurantId);
+        return ResponseEntity.ok(response);
 
     }
 

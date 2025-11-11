@@ -1,5 +1,6 @@
 package com.cemihsankurt.foodAppProject.service;
 
+
 import com.cemihsankurt.foodAppProject.dto.OrderDetailsResponseDto;
 import com.cemihsankurt.foodAppProject.entity.OrderStatus;
 import com.cemihsankurt.foodAppProject.entity.Restaurant;
@@ -9,13 +10,13 @@ import java.util.List;
 
 public interface IOrderService {
 
-    OrderDetailsResponseDto createOrderFromCart(Authentication authentication);
+    OrderDetailsResponseDto createOrderFromCart(Authentication authentication, Long addressId);
 
-    List<OrderDetailsResponseDto> getOrdersByCustomerId(Long customerId);
+    List<OrderDetailsResponseDto> getOrdersByCustomerId(Authentication authentication);
 
     OrderDetailsResponseDto getOrderById(Long orderId, Authentication authentication);
 
-    OrderDetailsResponseDto deleteOrderById(Long orderId);
+    OrderDetailsResponseDto cancelOrder(Long orderId,Authentication authentication);
 
     List<OrderDetailsResponseDto> getOrdersByRestaurant(Restaurant restaurant);
 

@@ -11,15 +11,21 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "Orders")
+@Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "order_order_items",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_item_id")
+    )
     private List<OrderItem> orderItems;
 
 
@@ -39,6 +45,8 @@ public class Order {
 
     private BigDecimal totalPrice;
 
+    @Column(name = "delivery_address", nullable = false)
+    private String deliveryAddress;
 
 
 

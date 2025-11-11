@@ -1,6 +1,8 @@
 package com.cemihsankurt.foodAppProject.service;
 
 import com.cemihsankurt.foodAppProject.dto.ProductDto;
+import com.cemihsankurt.foodAppProject.dto.RestaurantDto;
+import com.cemihsankurt.foodAppProject.entity.Restaurant;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -16,6 +18,8 @@ public interface IRestaurantService {
     ProductDto updateProduct(Long productId,ProductDto productDto, Authentication authentication);
 
     List<ProductDto> getMenuForRestaurant(Long restaurantId);
+
+    List<RestaurantDto> getAvailableRestaurants();
 
 
 

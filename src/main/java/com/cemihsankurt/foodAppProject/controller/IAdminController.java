@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IAdminController {
 
-    List<RestaurantPendingDto> getRestaurants();
+    ResponseEntity<List<RestaurantPendingDto>> getPendingRestaurants();
 
     ResponseEntity<String> approveRestaurant(Long restaurantId);
 

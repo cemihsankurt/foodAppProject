@@ -1,6 +1,7 @@
 package com.cemihsankurt.foodAppProject.security;
 
 import com.cemihsankurt.foodAppProject.entity.Customer;
+import com.cemihsankurt.foodAppProject.entity.User;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;
 import com.cemihsankurt.foodAppProject.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import io.jsonwebtoken.Jwts;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,7 +27,6 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
-    private final CustomUserDetailsService userDetailsService;
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
@@ -32,28 +34,24 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    public JwtTokenProvider(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
-    public String generateToken(UserDetails userDetails) {
-
-
-        UserDetails user = this.userDetailsService.loadUserByUsername(userDetails.getUsername());
+    public String generateToken(User user) {
 
         Map<String, Object> claims = new HashMap<>();
 
-        String roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        claims.put("roles", roles);
+        GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
+        claims.put("roles", List.of(authority.getAuthority())); // Rolleri claim'e ekle
 
+        return buildToken(claims, user.getEmail(), jwtExpiration);
+    }
+
+    private String buildToken(Map<String, Object> claims, String subject,long jwtExpiration) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 36000000))
-                .signWith(getSigningKey(),SignatureAlgorithm.HS256)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 

@@ -8,9 +8,9 @@ public interface IAdminService {
 
     List<RestaurantPendingDto> getPendingRestaurants();
 
-    void approveRestaurant(Long restaurantId);
+    String approveRestaurant(Long restaurantId);
 
-    void rejectRestaurant(Long restaurantId);
+    String rejectRestaurant(Long restaurantId);
 
 
 }

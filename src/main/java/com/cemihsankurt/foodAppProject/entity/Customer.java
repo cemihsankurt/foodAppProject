@@ -1,17 +1,20 @@
 package com.cemihsankurt.foodAppProject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
-@Table(name = "Customers")
+@Table(name = "customers")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString(exclude = "cart") // ToString'de sonsuz döngü yapma
+@EqualsAndHashCode(exclude = "cart") // Equals/HashCode'da sonsuz döngü yapma
 public class Customer {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,13 @@ public class Customer {
 
     @Column(name = "fcm_token")
     private String fcmToken;
+
+    @OneToMany(
+            mappedBy = "customer", // Address sınıfındaki 'customer' alanıyla bağlı
+            cascade = CascadeType.ALL, // Müşteri silinirse adresleri de sil
+            orphanRemoval = true // Listeden adres silinirse DB'den de sil
+    )
+    private List<Address> addresses = new ArrayList<>();
 
 
 }

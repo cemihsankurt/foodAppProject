@@ -38,6 +38,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 new SimpleGrantedAuthority(user.getRole().name())
         );
 
+        System.out.println("### CustomUserDetailsService: Kullanıcı '" + email + "' bulundu. Yetkileri: " + authorities);
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),

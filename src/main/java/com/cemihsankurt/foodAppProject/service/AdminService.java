@@ -28,23 +28,27 @@ public class AdminService implements IAdminService{
     }
 
     @Override
-    public void approveRestaurant(Long restaurantId) {
+    public String approveRestaurant(Long restaurantId) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found"));
 
         restaurant.setApprovalStatus(ApprovalStatus.APPROVED);
         restaurantRepository.save(restaurant);
+
+        return "Restaurant (ID : " + restaurantId + ") has been approved";
     }
 
     @Override
-    public void rejectRestaurant(Long restaurantId) {
+    public String rejectRestaurant(Long restaurantId) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found"));
 
         restaurant.setApprovalStatus(ApprovalStatus.REJECTED);
         restaurantRepository.save(restaurant);
+
+        return "Restaurant (ID : " + restaurantId + ") has been rejected";
 
     }
 

@@ -38,11 +38,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(request ->
-                    request.requestMatchers(AUTHENTICATE,REGISTER_CUSTOMER,REGISTER_RESTAURANT,VERIFY_EMAIL,"/error","/api/restaurants/**").
+                    request.requestMatchers(AUTHENTICATE,REGISTER_CUSTOMER,REGISTER_RESTAURANT,VERIFY_EMAIL,"/error","/api/restaurants/**","/swagger-ui/**","/swagger-ui.html",
+                                    "/v3/api-docs/**").
                             permitAll().
                             requestMatchers("/api/admin/**").hasRole("ADMIN").
                             requestMatchers("/api/restaurant-panel/**").hasRole("RESTAURANT").
-                            requestMatchers("/api/customer/**","/api/orders/my-orders","/api/cart/**","/api/orders/create").hasRole("CUSTOMER").
+                            requestMatchers("/api/customer/**","/api/orders/my-orders","/api/cart/**","/api/orders/create-from-cart","/api/orders/{orderId}/cancel").hasRole("CUSTOMER").
                             requestMatchers("/api/orders/**").hasAnyRole("CUSTOMER","RESTAURANT").
                             anyRequest().
                             authenticated())

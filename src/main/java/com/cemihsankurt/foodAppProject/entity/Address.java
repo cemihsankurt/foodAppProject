@@ -3,27 +3,22 @@ package com.cemihsankurt.foodAppProject.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
-@Data
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "addresses")
+@Data
+public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String addressTitle;
 
     @Column(nullable = false)
-    private BigDecimal price;
-
-    private String description;
+    private String fullAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Restaurant restaurant;
-
-
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 }
