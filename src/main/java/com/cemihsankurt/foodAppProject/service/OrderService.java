@@ -93,7 +93,7 @@ public class OrderService implements IOrderService{
             if(restaurant == null){
                 restaurant = cartItem.getProduct().getRestaurant();
                 if(!restaurant.isAvailable()){
-                    throw new IllegalStateException("Restaurant" + restaurant.getName() + " is not available");
+                    throw new IllegalStateException("Restaurant" + restaurant.getName() + " is not available for orders.");
                 }
                 order.setRestaurant(restaurant);
             }
@@ -150,7 +150,7 @@ public class OrderService implements IOrderService{
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         boolean hasPermission = false;
 
@@ -197,7 +197,7 @@ public class OrderService implements IOrderService{
         }
 
         if(order.getOrderStatus() != OrderStatus.PENDING){
-            throw new IllegalStateException("Only pending orders can be cancelled");
+            throw new IllegalStateException("Only pending orders can be cancelled.");
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
