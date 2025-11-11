@@ -94,7 +94,7 @@ public class AuthService implements IAuthService{
     public UserResponseDto registerCustomer(RegisterCustomerRequestDto registerCustomerRequestDto) {
 
         if(userRepository.existsByEmail(registerCustomerRequestDto.getEmail())) {
-            throw new ResourceNotFoundException("Email Already Exists");
+            throw new IllegalStateException("Email Already Exists");
         }
 
         UserResponseDto userResponseDto = new UserResponseDto();
@@ -173,7 +173,7 @@ public class AuthService implements IAuthService{
         user.setVerified(true);
         userRepository.save(user);
         verificationRepository.delete(vToken);
-        return "Email Verified Successfully";
+        return "Email verified successfully.";
 
     }
 

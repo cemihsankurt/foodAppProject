@@ -67,6 +67,7 @@ public class CustomerService implements ICustomerService{
         address.setAddressTitle(request.getAddressTitle());
         address.setFullAddress(request.getFullAddress());
         Address savedAddress = addressRepository.save(address);
+        myCustomer.getAddresses().add(savedAddress);
 
         return convertToDto(savedAddress);
     }
@@ -78,8 +79,9 @@ public class CustomerService implements ICustomerService{
         Address address = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
         if(!address.getCustomer().getId().equals(myCustomer.getId())) {
-            throw new AccessDeniedException("No permission");
+            throw new AccessDeniedException("No permission to delete this address");
         }
+        myCustomer.getAddresses().remove(address);
         addressRepository.delete(address);
     }
 

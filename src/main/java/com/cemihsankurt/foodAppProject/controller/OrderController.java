@@ -51,7 +51,7 @@ public class OrderController implements IOrderController {
 
     }
 
-    @PutMapping("/{orderId}/cancel")
+    @PostMapping("/{orderId}/cancel")
     public ResponseEntity<OrderDetailsResponseDto> cancelOrder(@PathVariable Long orderId, Authentication authentication) {
 
 

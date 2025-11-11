@@ -41,7 +41,7 @@ public class CustomerController implements ICustomerController{
     @Override
     public ResponseEntity<Void> deleteAddress(@PathVariable Long addressId, Authentication authentication) {
         customerService.deleteAddress(addressId, authentication);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/addresses")

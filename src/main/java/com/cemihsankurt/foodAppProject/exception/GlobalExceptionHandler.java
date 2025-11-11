@@ -4,6 +4,7 @@ import com.cemihsankurt.foodAppProject.dto.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -43,19 +44,36 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
-
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+    @ExceptionHandler(BadCredentialsException.class) // SADECE BU HATAYI YAKALA
+    public ResponseEntity<ErrorResponseDto> handleBadCredentialsException(
+            BadCredentialsException ex, // Parametreyi de spesifik yap
+            WebRequest request
+    ) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
                 LocalDateTime.now(),
-                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.value(), // 403 (Testin bunu bekliyordu)
                 "Forbidden",
-                ex.getMessage(),
-                request.getDescription(false)
+                "Kullanıcı adı veya şifre hatalı.",
+                request.getDescription(false).replace("uri=", "")
         );
 
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(
+            AccessDeniedException ex,
+            WebRequest request
+    ) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(), // 403
+                "Forbidden",
+                ex.getMessage(), // "Bu siparişi silme yetkiniz yok"
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

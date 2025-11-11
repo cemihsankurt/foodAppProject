@@ -1,5 +1,6 @@
 package com.cemihsankurt.foodAppProject.repository;
 
+import com.cemihsankurt.foodAppProject.entity.User;
 import com.cemihsankurt.foodAppProject.entity.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +11,9 @@ import java.util.Optional;
 public interface VerificationRepository extends JpaRepository<VerificationToken, Long> {
 
     Optional<VerificationToken> findByToken(String token);
+
+    Optional<VerificationToken> findByUserId(Long userId);
+
+    Optional<VerificationToken> findByUser(User user);
 
 }

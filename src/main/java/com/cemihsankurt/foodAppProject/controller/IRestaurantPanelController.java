@@ -7,11 +7,11 @@ import org.springframework.security.core.Authentication;
 
 public interface IRestaurantPanelController {
 
-    void updateAvailability(StatusUpdateRequest isAvailable, Authentication authentication);
+    ResponseEntity<Void> updateAvailability(StatusUpdateRequest isAvailable, Authentication authentication);
 
     ResponseEntity<ProductDto> addProductToMenu(ProductDto productDto, Authentication authentication);
 
-    void deleteProductFromMenu(Long productId, Authentication authentication);
+    ResponseEntity<Void> deleteProductFromMenu(Long productId, Authentication authentication);
 
     ResponseEntity<ProductDto> updateProduct(Long productId, ProductDto productDto, Authentication authentication);
 

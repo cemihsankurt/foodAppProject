@@ -23,7 +23,7 @@ public class VerificationToken {
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
