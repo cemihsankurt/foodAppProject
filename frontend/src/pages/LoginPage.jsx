@@ -1,5 +1,7 @@
-import React, { useState } from 'react'; // React'in "hafızasını" (useState) import et
-import axios from 'axios'; // 1. Adımda kurduğumuz "telefonu" import et
+import React, { useState } from 'react'; // React'in "hafızasını" (useState) import et // 1. Adımda kurduğumuz "telefonu" import et
+import apiClient from '../api.js';
+import { useNavigate } from 'react-router-dom'; // Önceden ayarlanmış axios örneği
+import { useAuth } from '../context/AuthContext.jsx';
 
 // Bu bir React Bileşenidir (Component)
 function LoginPage() {
@@ -9,6 +11,9 @@ function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null); // Hata mesajlarını tutmak için
+
+    const navigate = useNavigate();
+    const { login } = useAuth(); // Sayfa yönlendirme fonksiyonu
 
     // --- 2. EYLEM (Form Gönderme) ---
     // "Giriş Yap" butonuna basıldığında bu fonksiyon çalışır.
@@ -31,14 +36,11 @@ function LoginPage() {
             // 4. BAŞARI!
             // Tarayıcının Konsoluna (F12) gelen token'ı yazdır
             const token = response.data.token;
-            console.log('GİRİŞ BAŞARILI! Token:', token);
 
-            localStorage.setItem('authToken', token);
+            login(token); // AuthContext içindeki login fonksiyonunu çağırarak token'ı kaydet
+            
 
-            //ileride buraya 'react-router-dom' ile yönlendirme gelecek)
-            alert('Giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...');
-            // Şimdilik sayfayı manuel olarak yenileyerek "giriş yapıldığını" varsayalım.
-            window.location.reload();
+            navigate('/'); // Giriş başarılıysa ana sayfaya yönlendir
             
             
 
