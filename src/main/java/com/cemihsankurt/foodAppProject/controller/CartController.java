@@ -26,6 +26,7 @@ public class CartController implements  ICartController {
     @PostMapping("/add")
     public ResponseEntity<CartDto> addProductToCart(@RequestBody AddToCartRequest addToCartRequest, Authentication authentication) {
 
+        System.out.println("Adding product to cart: " + addToCartRequest.getProductId() + " with quantity: " + addToCartRequest.getQuantity());
         CartDto updatedCart = cartService.addToCart(addToCartRequest.getProductId(), addToCartRequest.getQuantity(), authentication);
 
         return ResponseEntity.ok(updatedCart);
