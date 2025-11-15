@@ -2,6 +2,7 @@ package com.cemihsankurt.foodAppProject.service;
 
 import com.cemihsankurt.foodAppProject.dto.ProductDto;
 import com.cemihsankurt.foodAppProject.dto.RestaurantDto;
+import com.cemihsankurt.foodAppProject.dto.RestaurantPanelDto;
 import com.cemihsankurt.foodAppProject.entity.ApprovalStatus;
 import com.cemihsankurt.foodAppProject.entity.Product;
 import com.cemihsankurt.foodAppProject.entity.Restaurant;
@@ -15,6 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,15 +34,17 @@ public class RestaurantService implements IRestaurantService{
     private ProductRepository productRepository;
 
     @Override
+    @Transactional
     public void updateAvailability(boolean isAvailable, Authentication authentication) {
 
        Restaurant restaurant = getCurrentRestaurant(authentication);
 
-        if(restaurant.getApprovalStatus() != ApprovalStatus.APPROVED ){
+        if(restaurant.getApprovalStatus() != ApprovalStatus.APPROVED){
             throw new IllegalStateException("Only approved restaurants can update availability status.");
         }
-
+        System.out.println("Before: " + restaurant.isAvailable());
         restaurant.setAvailable(isAvailable);
+        System.out.println("After: " + restaurant.isAvailable());
         restaurantRepository.save(restaurant);
 
     }
@@ -120,6 +124,24 @@ public class RestaurantService implements IRestaurantService{
         return restaurants.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public RestaurantPanelDto getMyPanelDetails(Authentication authentication) {
+
+        Restaurant myRestaurant = getCurrentRestaurant(authentication);
+        List<ProductDto> menuDto = myRestaurant.getMenu().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+
+        // 3. Her şeyi DTO'da birleştirip döndür
+        return RestaurantPanelDto.builder()
+                .restaurantId(myRestaurant.getId())
+                .restaurantName(myRestaurant.getName())
+                .isAvailable(myRestaurant.isAvailable())
+                .approvalStatus(myRestaurant.getApprovalStatus())
+                .menu(menuDto) // Menüyü de ekle
+                .build();
     }
 
     private Restaurant getCurrentRestaurant(Authentication authentication) {
