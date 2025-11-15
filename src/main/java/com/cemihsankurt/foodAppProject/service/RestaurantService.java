@@ -3,7 +3,7 @@ package com.cemihsankurt.foodAppProject.service;
 import com.cemihsankurt.foodAppProject.dto.ProductDto;
 import com.cemihsankurt.foodAppProject.dto.RestaurantDto;
 import com.cemihsankurt.foodAppProject.dto.RestaurantPanelDto;
-import com.cemihsankurt.foodAppProject.entity.ApprovalStatus;
+import com.cemihsankurt.foodAppProject.enums.ApprovalStatus;
 import com.cemihsankurt.foodAppProject.entity.Product;
 import com.cemihsankurt.foodAppProject.entity.Restaurant;
 import com.cemihsankurt.foodAppProject.entity.User;
@@ -14,7 +14,6 @@ import com.cemihsankurt.foodAppProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -2,12 +2,15 @@ package com.cemihsankurt.foodAppProject.security;
 
 import com.cemihsankurt.foodAppProject.entity.Customer;
 import com.cemihsankurt.foodAppProject.entity.User;
+import com.cemihsankurt.foodAppProject.enums.Role;
+import com.cemihsankurt.foodAppProject.repository.RestaurantRepository;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;
 import com.cemihsankurt.foodAppProject.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
@@ -41,6 +46,15 @@ public class JwtTokenProvider {
 
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
         claims.put("roles", List.of(authority.getAuthority())); // Rolleri claim'e ekle
+
+        claims.put("userId", user.getId()); // Kullanıcının ID'sini token'a ekle
+
+        if (user.getRole() == Role.ROLE_RESTAURANT) {
+            restaurantRepository.findByUserId(user.getId())
+                    .ifPresent(restaurant -> {
+                        claims.put("restaurantId", restaurant.getId());
+                    });
+        }
 
         return buildToken(claims, user.getEmail(), jwtExpiration);
     }

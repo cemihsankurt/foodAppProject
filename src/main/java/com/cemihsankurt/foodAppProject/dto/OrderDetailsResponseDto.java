@@ -1,6 +1,6 @@
 package com.cemihsankurt.foodAppProject.dto;
 
-import com.cemihsankurt.foodAppProject.entity.OrderStatus;
+import com.cemihsankurt.foodAppProject.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Data;
 

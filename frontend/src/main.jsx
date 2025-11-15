@@ -24,6 +24,8 @@ import RestaurantOrdersPage from './pages/RestaurantOrdersPage.jsx';
 import RestaurantOrderDetailPage from './pages/RestaurantOrderDetailPage.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx'; // <-- YENİ SAYFAYI İMPORT ET
 import AdminRoute from './auth/AdminRoute.jsx'; // <-- YENİ GÖREVLİYİ İMPORT ET
+import UserManagementPage from './pages/UserManagementPage.jsx';
+import ErrorPage from './pages/ErrorPage.jsx';
 
 // (CSS importları da burada kalabilir, örn: import './index.css')
 
@@ -32,6 +34,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />, // Ana çerçeve
+    errorElement: <ErrorPage />,
     children: [ 
       {
         path: '/', 
@@ -114,6 +117,14 @@ const router = createBrowserRouter([
         element: (
           <AdminRoute> {/* Önce YENİ Güvenlik Görevlisine sor */}
             <AdminDashboard /> {/* Rolü Admin ise, Admin Sayfasını göster */}
+          </AdminRoute>
+        ),
+      },
+      {
+        path: '/admin-users',
+        element: (
+          <AdminRoute>
+            <UserManagementPage />
           </AdminRoute>
         ),
       }

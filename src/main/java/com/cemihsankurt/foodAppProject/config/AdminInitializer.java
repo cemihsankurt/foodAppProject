@@ -1,6 +1,6 @@
 package com.cemihsankurt.foodAppProject.config;
 
-import com.cemihsankurt.foodAppProject.entity.Role;
+import com.cemihsankurt.foodAppProject.enums.Role;
 import com.cemihsankurt.foodAppProject.entity.User;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

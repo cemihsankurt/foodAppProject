@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import apiClient from '../api.js';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 function RestaurantOrdersPage() {
     
@@ -8,6 +11,7 @@ function RestaurantOrdersPage() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user } = useAuth();
 
     // 2. EFEKT: Sayfa ilk yüklendiğinde SADECE 1 KEZ çalış
     useEffect(() => {
@@ -26,7 +30,58 @@ function RestaurantOrdersPage() {
         };
 
         fetchRestaurantOrders();
-    }, []); // Boş dizi '[]' -> Sadece 1 kez çalışır
+    }, []);
+    
+    // Boş dizi '[]' -> Sadece 1 kez çalışır
+
+    useEffect(() => {
+        
+        // Eğer kullanıcı restoran değilse veya restaurantId'si yoksa bağlanma
+        if (!user || !user.roles.includes('ROLE_RESTAURANT') || !user.restaurantId) {
+            return;
+        }
+
+        // WebSocket bağlantısı için STOMP client'ı ayarla
+        const sock = new SockJS('http://localhost:8080/ws'); 
+        const stompClient = Stomp.over(sock);
+
+
+        // Bağlantı başarılı olduğunda...
+        stompClient.onConnect = (frame) => {
+            console.log('WebSocket\'e bağlanıldı: ' + frame);
+            
+            // 5. KENDİ ÖZEL KANALIMIZA ABONE OL
+            // (Backend'de 'messagingTemplate.convertAndSend' ile yolladığımız yer)
+            const topic = `/topic/orders/restaurant/${user.restaurantId}`;
+            
+            stompClient.subscribe(topic, (message) => {
+                // KANALDAN YENİ MESAJ GELDİĞİNDE:
+                const newOrder = JSON.parse(message.body); // Gelen sipariş (JSON)
+                console.log('Yeni sipariş alındı!', newOrder);
+                
+                // Listeyi güncelle: Yeni siparişi listenin en başına ekle
+                setOrders((currentOrders) => [newOrder, ...currentOrders]);
+            });
+        };
+
+        // Bağlantı hatası olursa...
+        stompClient.onStompError = (frame) => {
+            console.error('STOMP hatası: ' + frame.headers['message']);
+        };
+
+        // Bağlantıyı aktifleştir
+        stompClient.activate();
+
+        // 6. TEMİZLİK FONKSİYONU
+        // Bu sayfadan ayrıldığımızda (component unmount), bağlantıyı kapat
+        return () => {
+            if (stompClient.connected) {
+                stompClient.deactivate();
+                console.log('WebSocket bağlantısı kapatıldı.');
+            }
+        };
+
+    }, [user]);
 
     // 3. GÖRÜNÜM (Render)
     if (loading) return <div>Gelen Siparişler Yükleniyor...</div>;

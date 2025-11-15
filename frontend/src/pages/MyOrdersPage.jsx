@@ -30,6 +30,34 @@ function MyOrdersPage() {
         fetchMyOrders();
     }, []); // Boş dizi '[]' -> Sadece 1 kez çalışır
 
+    const handleCancelOrder = async (orderId) => {
+        // Kullanıcıya onayla
+        if (!window.confirm("Bu siparişi iptal etmek istediğinize emin misiniz?")) {
+            return;
+        }
+
+        try {
+            // Backend'deki müşteriye özel 'cancel' endpoint'ini çağır
+            const response = await apiClient.post(`/orders/${orderId}/cancel`);
+            
+            // Başarılı! Backend'den güncel sipariş (OrderDetailsResponseDto) döndü.
+            // Şimdi ekrandaki listeyi (hafızayı) güncelleyelim.
+            setOrders(currentOrders =>
+                currentOrders.map(order => 
+                    order.orderId === orderId ? 
+                    { ...order, orderStatus: 'CANCELLED' } : // Sadece durumu "CANCELLED" yap
+                    order
+                )
+            );
+            alert("Sipariş başarıyla iptal edildi.");
+
+        } catch (err) {
+            // (örn: "Sipariş durumu 'PREPARING' olduğu için artık iptal edilemez.")
+            console.error("Sipariş iptal edilirken hata:", err);
+            alert("Hata: " + (err.response?.data?.message || err.message));
+        }
+    };
+
     // 3. GÖRÜNÜM (Render)
     if (loading) return <div>Siparişleriniz Yükleniyor...</div>;
     if (error) return <div style={{ color: 'red' }}>Hata: {error}</div>;
@@ -43,12 +71,21 @@ function MyOrdersPage() {
                         <div key={order.orderId} style={{ border: '1px solid black', margin: '10px', padding: '10px' }}>
                             <h4>Restoran: {order.restaurantName}</h4>
                             <p>Durum: <strong>{order.orderStatus}</strong></p>
-                            <p>Tarih: {new Date(order.orderTime).toLocaleString('tr-TR')}</p>
-                            <p>Toplam Tutar: {order.totalPrice} TL</p>
+                            {/* ... (Tarih, Toplam Tutar) ... */}
                             
-                            {/* Buraya da tıklayınca sipariş detayına giden
-                                bir link ekleyebiliriz (daha sonra) */}
                             <Link to={`/orders/${order.orderId}`}>Detayları Gör</Link>
+                            
+                            {/* --- 4. YENİ KOŞULLU BUTON --- */}
+                            {/* Sadece 'PENDING' ise İPTAL ET butonunu göster */}
+                            {order.orderStatus === 'PENDING' && (
+                                <button 
+                                    onClick={() => handleCancelOrder(order.orderId)}
+                                    style={{ background: 'red', color: 'white', marginLeft: '10px' }}
+                                >
+                                    İptal Et
+                                </button>
+                            )}
+                            {/* --- BİTTİ --- */}
                         </div>
                     ))
                 ) : (

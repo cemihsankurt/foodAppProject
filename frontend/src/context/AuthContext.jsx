@@ -17,8 +17,10 @@ function decodeToken(token) {
         // Backend'deki JwtTokenProvider'da 'roles' ve 'sub' (email)
         // kullandığımızdan emin olmalıyız (ki öyle yaptık).
         return {
+            id: decoded.userId,
             email: decoded.sub,
-            roles: decoded.roles || [] // 'roles' yoksa boş liste
+            roles: decoded.roles || [], // 'roles' yoksa boş liste
+            restaurantId: decoded.restaurantId || null
         };
     } catch (e) {
         console.error("Token çözülemedi:", e);

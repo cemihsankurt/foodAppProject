@@ -12,18 +12,18 @@ import lombok.Data;
 public class RegisterRestaurantRequestDto {
 
     @NotEmpty
-    @Email(message = "Invalid email format")
+    @Email(message = "Geçersiz email formatı")
     private String email;
 
     @NotEmpty
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 6, message = "Şifre en az 6 karakter uzunluğunda olmalıdır")
     private String password;
 
     @NotEmpty
     private String restaurantName;
 
-    @NotEmpty
-    @Pattern(regexp = "\\d{11}", message = "Phone number must be 11 digits")
+    @NotEmpty(message = "Telefon numarası boş olamaz")
+    @Size(min = 11, max = 11, message = "Telefon numarası 11 haneli olmalıdır.")
     private String phoneNumber;
 
 }

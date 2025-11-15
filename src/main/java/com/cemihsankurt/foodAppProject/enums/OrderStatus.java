@@ -1,4 +1,4 @@
-package com.cemihsankurt.foodAppProject.entity;
+package com.cemihsankurt.foodAppProject.enums;
 
 public enum OrderStatus {
 

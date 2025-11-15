@@ -3,7 +3,7 @@ package com.cemihsankurt.foodAppProject.controller;
 import com.cemihsankurt.foodAppProject.dto.AddressDto;
 import com.cemihsankurt.foodAppProject.entity.Address;
 import com.cemihsankurt.foodAppProject.entity.Customer;
-import com.cemihsankurt.foodAppProject.entity.Role;
+import com.cemihsankurt.foodAppProject.enums.Role;
 import com.cemihsankurt.foodAppProject.entity.User;
 import com.cemihsankurt.foodAppProject.repository.AddressRepository;
 import com.cemihsankurt.foodAppProject.repository.CustomerRepository;

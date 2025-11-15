@@ -16,7 +16,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Frontend'in bağlanacağı URL: "/ws"
         // (örn: ws://localhost:8080/ws)
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("*"); // (Geliştirme için tüm kaynaklara izin ver)
+                .setAllowedOriginPatterns("http://localhost:5173")
+                .withSockJS();// (Geliştirme için tüm kaynaklara izin ver)
         // Gerçek uygulamada .setAllowedOrigins("http://senin-frontend-adresin.com")
     }
 

@@ -2,26 +2,22 @@ package com.cemihsankurt.foodAppProject.service;
 
 import com.cemihsankurt.foodAppProject.dto.*;
 import com.cemihsankurt.foodAppProject.entity.*;
+import com.cemihsankurt.foodAppProject.enums.Role;
 import com.cemihsankurt.foodAppProject.exception.ResourceNotFoundException;
 import com.cemihsankurt.foodAppProject.repository.CustomerRepository;
 import com.cemihsankurt.foodAppProject.repository.RestaurantRepository;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;
 import com.cemihsankurt.foodAppProject.repository.VerificationRepository;
 import com.cemihsankurt.foodAppProject.security.JwtTokenProvider;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

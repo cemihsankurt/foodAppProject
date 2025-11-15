@@ -4,6 +4,7 @@ import com.cemihsankurt.foodAppProject.dto.LoginRequestDto;
 import com.cemihsankurt.foodAppProject.dto.RegisterCustomerRequestDto;
 import com.cemihsankurt.foodAppProject.dto.RegisterRestaurantRequestDto;
 import com.cemihsankurt.foodAppProject.entity.*;
+import com.cemihsankurt.foodAppProject.enums.Role;
 import com.cemihsankurt.foodAppProject.repository.CustomerRepository;
 import com.cemihsankurt.foodAppProject.repository.RestaurantRepository;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;

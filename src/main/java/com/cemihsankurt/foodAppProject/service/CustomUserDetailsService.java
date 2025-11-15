@@ -4,6 +4,7 @@ import com.cemihsankurt.foodAppProject.entity.User;
 import com.cemihsankurt.foodAppProject.exception.ResourceNotFoundException;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +34,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        if(user.isBanned()){
+
+            throw new LockedException("Bu hesap askıya alınmıştır (banlanmıştır).");
+        }
 
         Collection<? extends GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority(user.getRole().name())

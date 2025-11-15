@@ -2,8 +2,7 @@ package com.cemihsankurt.foodAppProject.service;
 
 
 import com.cemihsankurt.foodAppProject.dto.OrderDetailsResponseDto;
-import com.cemihsankurt.foodAppProject.entity.OrderStatus;
-import com.cemihsankurt.foodAppProject.entity.Restaurant;
+import com.cemihsankurt.foodAppProject.enums.OrderStatus;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.cemihsankurt.foodAppProject.entity;
 
+import com.cemihsankurt.foodAppProject.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

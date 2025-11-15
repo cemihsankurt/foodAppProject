@@ -45,7 +45,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(request ->
                     request.requestMatchers(AUTHENTICATE,REGISTER_CUSTOMER,REGISTER_RESTAURANT,VERIFY_EMAIL,"/error","/api/restaurants/**","/swagger-ui/**","/swagger-ui.html",
-                                    "/v3/api-docs/**").
+                                    "/v3/api-docs/**","/ws/**").
                             permitAll().
                             requestMatchers("/api/admin/**").hasRole("ADMIN").
                             requestMatchers("/api/restaurant-panel/**").hasRole("RESTAURANT").
@@ -53,9 +53,15 @@ public class SecurityConfig {
                             requestMatchers("/api/orders/**").hasAnyRole("CUSTOMER","RESTAURANT").
                             anyRequest().
                             authenticated())
-                    .sessionManagement(sessionManagement ->sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authenticationProvider(authenticationProvider)
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                            .headers(headers ->
+                                headers.frameOptions(frameOptions ->
+                                frameOptions.sameOrigin() // Sadece 'localhost'tan gelen 'iframe'lere izin ver
+                                                    )
+                                    )
+                            .sessionManagement(sessionManagement ->sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                            .authenticationProvider(authenticationProvider)
+                            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
 
         return http.build();
@@ -65,11 +71,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Geliştirme için frontend'in adresine (Vite) izin ver:
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.addAllowedOriginPattern("*"); // ★ BUNU EKLE (WS CORS'u düzeltir)
+        configuration.addAllowedMethod("*");
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         // (Token'lı istekler için bu 'true' olabilir ama şimdilik '*' değilse kalsın)
-        // configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Tüm yollar (/api/...) için bu ayarları uygula

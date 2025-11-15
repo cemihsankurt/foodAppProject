@@ -1,6 +1,8 @@
 package com.cemihsankurt.foodAppProject.controller;
 
 import com.cemihsankurt.foodAppProject.entity.*;
+import com.cemihsankurt.foodAppProject.enums.ApprovalStatus;
+import com.cemihsankurt.foodAppProject.enums.Role;
 import com.cemihsankurt.foodAppProject.repository.ProductRepository;
 import com.cemihsankurt.foodAppProject.repository.RestaurantRepository;
 import com.cemihsankurt.foodAppProject.repository.UserRepository;

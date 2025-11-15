@@ -1,5 +1,6 @@
 package com.cemihsankurt.foodAppProject.entity;
 
+import com.cemihsankurt.foodAppProject.enums.ApprovalStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 

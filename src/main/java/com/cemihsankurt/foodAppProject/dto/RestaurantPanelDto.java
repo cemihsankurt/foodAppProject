@@ -1,7 +1,7 @@
 package com.cemihsankurt.foodAppProject.dto;
 
 
-import com.cemihsankurt.foodAppProject.entity.ApprovalStatus;
+import com.cemihsankurt.foodAppProject.enums.ApprovalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

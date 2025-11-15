@@ -52,7 +52,8 @@ function App() {
         {isAdmin && (
           // EĞER ADMİN GİRMİŞSE:
           <>
-            <Link to="/admin">Admin Paneli</Link> {/* (Bu sayfayı sonra yapacağız) */}
+            <Link to="/admin">Restoran Onay</Link> {/* (Bu sayfayı sonra yapacağız) */}
+            <Link to="/admin-users">Kullanıcı Yönetimi</Link> {/* <-- YENİ LİNK */}
             <button onClick={handleLogout}>Çıkış Yap</button>
           </>
         )}

@@ -1,11 +1,11 @@
 package com.cemihsankurt.foodAppProject.entity;
 
+import com.cemihsankurt.foodAppProject.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +34,9 @@ public class User implements UserDetails {
     private Role role;
 
     private boolean isVerified;
+
+    @Column(name = "is_banned", nullable = false)
+    private boolean isBanned = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

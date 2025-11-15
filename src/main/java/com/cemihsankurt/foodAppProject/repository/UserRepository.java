@@ -1,6 +1,6 @@
 package com.cemihsankurt.foodAppProject.repository;
 
-import com.cemihsankurt.foodAppProject.entity.Role;
+import com.cemihsankurt.foodAppProject.enums.Role;
 import com.cemihsankurt.foodAppProject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
