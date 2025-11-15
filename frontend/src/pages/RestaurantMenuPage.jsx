@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // <-- Router'dan ID'yi okumak için
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx'; // <-- Router'dan ID'yi okumak için
 import apiClient from '../api.js';
 
 function RestaurantMenuPage() {
@@ -8,8 +9,10 @@ function RestaurantMenuPage() {
     // (main.jsx'te yolu '/restaurants/:restaurantId' yapacağız,
     //  bu 'useParams', o ':restaurantId' değişkenini yakalar)
     const { restaurantId } = useParams();
-    const { name } = useParams();
-
+    const location  = useLocation();
+    const restaurantName = location.state?.restaurantName;
+    const {user, setCart} = useAuth();
+    const navigate = useNavigate();
     const [menu, setMenu] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -32,21 +35,44 @@ function RestaurantMenuPage() {
         fetchMenu();
     }, [restaurantId]); // 'restaurantId' değişirse bu efekti tekrar çalıştır
 
+
+     const handleAddToCart = async(productId) => {
+                console.log("Adding product to cart, productId:", productId);
+                try {
+                    const response = await apiClient.post('/cart/add', { 
+                        productId, 
+                        quantity: 1 
+                    });
+                    setCart(response.data);
+                    console.log("Ürün sepete eklendi:", response.data);
+                    alert("Sepetiniz güncellendi.");
+
+                }
+                catch (err) {
+                    console.error("Sepete ürün eklenirken hata:", err);
+                    alert("Ürün sepete eklenirken bir hata oluştu.");
+                }
+            }
+
     // 4. Görünüm (Render)
     if (loading) return <div>Menü Yükleniyor...</div>;
     if (error) return <div style={{ color: 'red' }}>Hata: {error}</div>;
 
     return (
         <div>
-            <h2>Restoran Menüsü (ID: {restaurantId}), (Name: {name})</h2>
+            <h2>{restaurantName || 'Restoran Menüsü'}</h2>
             <div className="menu-list">
                 {menu.length > 0 ? (
                     menu.map(product => (
                         <div key={product.id} style={{ border: '1px solid gray', margin: '5px', padding: '5px' }}>
                             <h4>{product.name}</h4>
                             <p>{product.description}</p>
-                            <p>Fiyat: {product.price} TL</p>
-                            {/* Buraya yakında "Sepete Ekle" butonu gelecek */}
+                            <p>{product.price} TL</p>
+                            {user && user.roles.includes('ROLE_CUSTOMER') && (
+                            <button onClick={() => handleAddToCart(product.id)}>
+                            Sepete Ekle
+                            </button>
+    )}
                         </div>
                     ))
                 ) : (

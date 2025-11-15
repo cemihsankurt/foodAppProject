@@ -5,6 +5,7 @@ import com.cemihsankurt.foodAppProject.dto.CartItemDto;
 import com.cemihsankurt.foodAppProject.entity.*;
 import com.cemihsankurt.foodAppProject.exception.ResourceNotFoundException;
 import com.cemihsankurt.foodAppProject.repository.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,10 @@ public class CartService implements ICartService {
     @Autowired private CustomerRepository customerRepository;
 
     @Override
+    @Transactional
     public CartDto addToCart(Long productId, int quantity, Authentication authentication) {
+
+        System.out.println("AUTH: " + authentication.getName());
 
         Cart myCart = findMyCart(authentication);
         Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product not found"));
@@ -46,10 +50,11 @@ public class CartService implements ICartService {
 
         }
 
-        return getCartContents(authentication);
+        return convertCartToDto(myCart);
     }
 
     @Override
+    @Transactional
     public CartDto removeFromCart(Long productId, Authentication authentication) {
 
         Cart myCart = findMyCart(authentication);
@@ -57,16 +62,15 @@ public class CartService implements ICartService {
         cartItemRepository.delete(itemToRemove);
         myCart.getCartItems().remove(itemToRemove);
 
-        return getCartContents(authentication);
-    }
-
-    @Override
-    public CartDto getCartContents(Authentication authentication) {
-        Cart myCart = findMyCart(authentication);
-
         return convertCartToDto(myCart);
     }
 
+    @Override
+    @Transactional
+    public CartDto getCartContents(Authentication authentication) {
+        Cart myCart = findMyCart(authentication);
+        return convertCartToDto(myCart);
+    }
 
 
     private Cart findMyCart(Authentication authentication) {
@@ -74,7 +78,19 @@ public class CartService implements ICartService {
         String userEmail = authentication.getName();
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Customer customer = customerRepository.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        return customer.getCart();
+
+        Cart cart = customer.getCart();
+
+        if(cart == null) {
+            System.out.println("Creating new cart for customer: " + customer.getFirstName() + " " + customer.getLastName());
+            Cart newCart = new Cart();
+            newCart.setCustomer(customer);
+            customer.setCart(newCart);
+            cart = cartRepository.save(newCart);
+            customerRepository.save(customer);
+        }
+        return cart;
+
     }
 
     private CartDto convertCartToDto(Cart cart) {

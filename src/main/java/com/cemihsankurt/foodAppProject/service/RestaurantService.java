@@ -132,6 +132,7 @@ public class RestaurantService implements IRestaurantService{
     private ProductDto convertToDto(Product product) {
 
         return ProductDto.builder()
+                .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())

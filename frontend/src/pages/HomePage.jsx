@@ -68,11 +68,12 @@ function HomePage() {
                         <Link 
                             key={restaurant.id} 
                             to={`/restaurants/${restaurant.id}`} // Tıklayınca bu adrese git
+                            state={{restaurantName: restaurant.name}}
                             style={{ textDecoration: 'none', color: 'black' }} // (Çirkin link alt çizgisini kaldır)
                         >
                             <div style={{ border: '1px solid black', margin: '10px', padding: '10px' }}>
                                 <h3>{restaurant.name}</h3>
-                                <p>Mutfak Türü: {restaurant.cuisineType}</p>
+                                <p>{restaurant.description}</p>
                             </div>
                         </Link>
                         // --- GÜNCELLEME BİTTİ ---

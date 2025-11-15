@@ -4,7 +4,7 @@ import { useAuth } from './context/AuthContext.jsx';
 
 function App() {
 
-  const { isAuthenticated, logout } = useAuth(); // <-- Hafızadan durumu ve 'logout'u al
+  const { isAuthenticated, logout, cart } = useAuth(); // <-- Hafızadan durumu ve 'logout'u al
   const navigate = useNavigate();
 
   // Çıkış yap butonuna basılınca...
@@ -20,28 +20,47 @@ function App() {
         
         <Link to="/">Ana Sayfa</Link>
 
-        {/* --- İŞTE MANTIK BURADA --- */}
+        {/* --- MANTIK GÜNCELLEMESİ BURADA --- */}
         {isAuthenticated ? (
-          // Eğer giriş yapmışsa (token varsa):
           <>
-            <Link to="/my-orders">Siparişlerim</Link> {/* (Bu sayfayı sonra yapacağız) */}
+            <Link to="/my-orders">Siparişlerim</Link>
+            
+            {/* YENİ SEPET LİNKİ */}
+            <Link to="/cart">
+              Sepetim 
+              {/* Eğer sepet yüklendiyse ve içinde ürün varsa sayısını göster */}
+              {cart && cart.totalItemCount > 0 && (
+                <span style={{ background: 'red', color: 'white', borderRadius: '50%', padding: '2px 6px', marginLeft: '5px' }}>
+                  {cart.totalItemCount}
+                </span>
+              )}
+            </Link>
+            
             <button onClick={handleLogout}>Çıkış Yap</button>
           </>
         ) : (
-          // Eğer giriş yapmamışsa (token yoksa):
           <>
+            {/* (Giriş yapmamışsa menüsü aynı) */}
             <Link to="/login">Giriş Yap</Link>
             <Link to="/register-customer">Müşteri Kayıt</Link>
             <Link to="/register-restaurant">Restoran Kayıt</Link>
+            {/* ... */}
           </>
         )}
-        {/* --- MANTIK BİTTİ --- */}
       </nav>
 
       <hr />
 
       <main style={{ padding: '20px' }}>
-        <Outlet />
+        {/*
+          *
+          * 2. KONTROL (KATİL MUHTEMELEN BURADA):
+          * Bu <Outlet /> satırı burada yazıyor mu?
+          * 'Outlet', router'a "Ana Sayfa'yı veya Login'i buraya yerleştir" der.
+          * Bu satır eksikse, sayfan bembeyaz görünür.
+          *
+        */}
+        <Outlet /> 
       </main>
     </div>
   );
