@@ -4,6 +4,7 @@ import com.cemihsankurt.foodAppProject.entity.ApprovalStatus;
 import com.cemihsankurt.foodAppProject.entity.Restaurant;
 import com.cemihsankurt.foodAppProject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByApprovalStatus(ApprovalStatus approvalStatus);
 
     List<Restaurant> findByApprovalStatusAndIsAvailable(ApprovalStatus status, boolean isAvailable);
+
+    @Query("SELECT c.id FROM Restaurant c JOIN c.user u WHERE u.email = :email")
+    Long findRestaurantIdByUserEmail(String email);
 
 
 

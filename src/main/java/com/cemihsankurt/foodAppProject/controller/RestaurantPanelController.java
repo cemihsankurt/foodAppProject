@@ -2,6 +2,7 @@ package com.cemihsankurt.foodAppProject.controller;
 
 import com.cemihsankurt.foodAppProject.dto.OrderDetailsResponseDto;
 import com.cemihsankurt.foodAppProject.dto.ProductDto;
+import com.cemihsankurt.foodAppProject.dto.RestaurantPanelDto;
 import com.cemihsankurt.foodAppProject.entity.OrderStatus;
 import com.cemihsankurt.foodAppProject.service.IRestaurantService;
 import com.cemihsankurt.foodAppProject.service.OrderService;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Data
 class StatusUpdateRequest {
@@ -33,6 +36,14 @@ public class RestaurantPanelController implements IRestaurantPanelController {
     private IRestaurantService restaurantService;
     @Autowired
     private OrderService orderService;
+
+    @Override
+    @GetMapping("/my-details")
+    public ResponseEntity<RestaurantPanelDto> getMyPanelDetails(Authentication authentication) {
+
+        RestaurantPanelDto response = restaurantService.getMyPanelDetails(authentication);
+        return ResponseEntity.ok(response);
+    }
 
 
     @Override
@@ -75,5 +86,15 @@ public class RestaurantPanelController implements IRestaurantPanelController {
         OrderDetailsResponseDto response = orderService.updateOrderStatus(orderId,orderStatusRequest.getNewStatus(),authentication);
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDetailsResponseDto>> getOrders(Authentication authentication) {
+
+        List<OrderDetailsResponseDto> response = orderService.getOrdersByRestaurant(authentication);
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }

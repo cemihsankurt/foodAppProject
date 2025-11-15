@@ -17,7 +17,8 @@ public class OrderDetailsResponseDto {
     private String customerName;
     private BigDecimal totalPrice;
     private OrderStatus orderStatus;
-    private List<OrderItemDto> orderItemDtos;
+    private List<OrderItemDto> orderItems;
     private LocalDateTime orderTime;
+    private String deliveryAddress;
 
 }

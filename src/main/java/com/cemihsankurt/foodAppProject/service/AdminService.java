@@ -57,6 +57,7 @@ public class AdminService implements IAdminService{
         return RestaurantPendingDto.builder()
                 .id(restaurant.getId())
                 .name(restaurant.getName())
+                .email(restaurant.getUser().getEmail())
                 .phoneNumber(restaurant.getPhoneNumber())
                 .approvalStatus(restaurant.getApprovalStatus())
                 .build();

@@ -15,6 +15,16 @@ import ProtectedRoute from './auth/ProtectedRoute.jsx';
 import RegisterCustomerPage from './pages/RegisterCustomerPage.jsx';
 import RegisterRestaurantPage from './pages/RegisterRestaurantPage.jsx';
 import RestaurantMenuPage from './pages/RestaurantMenuPage.jsx';
+import CartPage from './pages/CartPage.jsx';
+import AddressPage from './pages/AddressPage.jsx';
+import MyOrdersPage from './pages/MyOrdersPage.jsx'; // <-- YENİ SAYFAYI İMPORT ET
+import OrderDetailPage from './pages/OrderDetailPage.jsx';
+import RestaurantPanelPage from './pages/RestaurantPanelPage.jsx';
+import RestaurantOrdersPage from './pages/RestaurantOrdersPage.jsx';
+import RestaurantOrderDetailPage from './pages/RestaurantOrderDetailPage.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx'; // <-- YENİ SAYFAYI İMPORT ET
+import AdminRoute from './auth/AdminRoute.jsx'; // <-- YENİ GÖREVLİYİ İMPORT ET
+
 // (CSS importları da burada kalabilir, örn: import './index.css')
 
 // --- YOL HARİTASI ---
@@ -42,6 +52,70 @@ const router = createBrowserRouter([
       {
         path: '/restaurants/:restaurantId',
         element: <RestaurantMenuPage />,
+      },
+      {
+        path: '/cart', // '/cart' adresine gidilince
+        element: (
+          <ProtectedRoute> {/* Önce Güvenlik Görevlisine sor */}
+            <CartPage /> {/* Token varsa, Sepet Sayfasını göster */}
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/my-addresses', // '/my-addresses' adresine gidilince
+        element: (
+          <ProtectedRoute> {/* Güvenlik Görevlisine sor */}
+            <AddressPage /> {/* Token varsa, Adres Sayfasını göster */}
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/my-orders', // '/my-orders' adresine gidilince
+        element: (
+          <ProtectedRoute> {/* Güvenlik Görevlisine sor */}
+            <MyOrdersPage /> {/* Token varsa, Siparişlerim Sayfasını göster */}
+          </ProtectedRoute>
+        ),
+      },
+      {
+            path: '/orders/:orderId', // '/orders/123' gibi
+            element: (
+                <ProtectedRoute>
+                    <OrderDetailPage />
+                </ProtectedRoute>
+            )
+        },
+        {
+        path: '/restaurant-panel',
+        element: (
+          <ProtectedRoute>
+            <RestaurantPanelPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/restaurant-orders',
+        element: (
+          <ProtectedRoute>
+            <RestaurantOrdersPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/restaurant-panel/orders/:orderId', // '/restaurant-panel/orders/3'
+        element: (
+          <ProtectedRoute> {/* Güvenlik Görevlisine sor */}
+            <RestaurantOrderDetailPage /> {/* Sipariş Yönetim Sayfasını göster */}
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin', // '/admin-panel' adresine gidilince
+        element: (
+          <AdminRoute> {/* Önce YENİ Güvenlik Görevlisine sor */}
+            <AdminDashboard /> {/* Rolü Admin ise, Admin Sayfasını göster */}
+          </AdminRoute>
+        ),
       }
     ],
   },

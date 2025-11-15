@@ -104,6 +104,7 @@ public class CustomerService implements ICustomerService{
 
     private AddressDto convertToDto(Address address) {
         return AddressDto.builder()
+                .id(address.getId())
                 .addressTitle(address.getAddressTitle())
                 .fullAddress(address.getFullAddress())
                 .build();

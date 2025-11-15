@@ -4,13 +4,12 @@ import com.cemihsankurt.foodAppProject.dto.*;
 import com.cemihsankurt.foodAppProject.entity.*;
 import com.cemihsankurt.foodAppProject.exception.ResourceNotFoundException;
 import com.cemihsankurt.foodAppProject.repository.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -64,6 +63,17 @@ public class OrderService implements IOrderService{
 
         Customer customer = customerRepository.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
         Cart cart = customer.getCart();
+
+        if (cart == null) {
+            System.out.println("Cart not found, " + customer.getFirstName() + "new cart is creating");
+
+            Cart newCart = new Cart();
+            newCart.setCustomer(customer);
+            customer.setCart(newCart);
+
+            cart = cartRepository.save(newCart);
+            customerRepository.save(customer);
+        }
 
         if(cart.getCartItems().isEmpty()){
 
@@ -122,7 +132,8 @@ public class OrderService implements IOrderService{
         messagingTemplate.convertAndSend(destination, orderDto);
         System.out.println("WebSocket notification send" + destination);
 
-        cartItemRepository.deleteAllByCartId(cart.getId());
+        cart.getCartItems().clear();
+        cartRepository.save(cart);
 
         return orderDto;
 
@@ -206,9 +217,12 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public List<OrderDetailsResponseDto> getOrdersByRestaurant(Restaurant restaurant) {
+    public List<OrderDetailsResponseDto> getOrdersByRestaurant(Authentication authentication) {
 
-        List<Order> orders = orderRepository.findByRestaurantId(restaurant.getId());
+        String userEmail = authentication.getName();
+        Long restaurantId = restaurantRepository.findRestaurantIdByUserEmail(userEmail);
+
+        List<Order> orders = orderRepository.findByRestaurantIdOrderByOrderTimeDesc(restaurantId);
         return orders.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -247,6 +261,7 @@ public class OrderService implements IOrderService{
 
     }
 
+
     private Restaurant getCurrentRestaurant(Authentication authentication) {
 
         String userEmail = authentication.getName();
@@ -265,20 +280,25 @@ public class OrderService implements IOrderService{
                 .orderId(order.getId())
                 .restaurantName(order.getRestaurant().getName())
                 .customerName(order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName())
-                .orderItemDtos(convertOrderItemsToDto(order.getOrderItems()))
+                .orderItems(convertOrderItemsToDto(order.getOrderItems()))
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus())
                 .orderTime(order.getOrderTime())
+                .deliveryAddress(order.getDeliveryAddress())
                 .build();
     }
 
     private List<OrderItemDto> convertOrderItemsToDto(List<OrderItem> orderItems) {
         return orderItems.stream()
-                .map(orderItem -> OrderItemDto.builder()
-                        .productName(orderItem.getProductName())
-                        .price(orderItem.getPrice())
-                        .quantity(orderItem.getQuantity())
-                        .build())
+                .map(this::convertOrderItemToDto)
                 .collect(Collectors.toList());
+    }
+
+    private OrderItemDto convertOrderItemToDto(OrderItem item) {
+        return OrderItemDto.builder()
+                .productName(item.getProductName())
+                .quantity(item.getQuantity())
+                .price(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .build();
     }
 }

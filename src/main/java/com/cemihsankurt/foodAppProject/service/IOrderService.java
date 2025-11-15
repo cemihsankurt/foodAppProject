@@ -18,7 +18,8 @@ public interface IOrderService {
 
     OrderDetailsResponseDto cancelOrder(Long orderId,Authentication authentication);
 
-    List<OrderDetailsResponseDto> getOrdersByRestaurant(Restaurant restaurant);
+    List<OrderDetailsResponseDto> getOrdersByRestaurant(Authentication authentication);
 
     OrderDetailsResponseDto updateOrderStatus(Long orderId, OrderStatus newStatus, Authentication authentication);
+
 }
